@@ -26,7 +26,7 @@ const categoryLabels: Record<string, string> = {
 };
 ---
 
-<a href={`/blog/${slug}/`} class="group block">
+<div class="group block">
   <article
     class="relative py-5 px-4 -mx-4 rounded-xl border border-transparent
            transition-colors duration-150 ease-out
@@ -34,6 +34,9 @@ const categoryLabels: Record<string, string> = {
            hover:border-[var(--color-border-subtle)]"
     data-category={category}
   >
+    <!-- Stretched link: makes entire card clickable -->
+    <a href={`/blog/${slug}/`} class="absolute inset-0 z-0" aria-hidden="true"></a>
+
     <div class="flex items-center gap-3 mb-2">
       <span class:list={['text-xs font-medium px-2 py-0.5 rounded-full', categoryStyles[category]]}>
         {categoryLabels[category]}
@@ -48,12 +51,16 @@ const categoryLabels: Record<string, string> = {
     <p class="text-sm text-[var(--color-text-muted)] mt-1 line-clamp-2">{description}</p>
 
     {tags.length > 0 && (
-      <div class="flex gap-2 mt-3">
+      <div class="flex gap-2 mt-3 relative z-10">
         {tags.slice(0, 4).map((tag) => (
-          <span class="text-xs text-[var(--color-text-faint)] bg-[var(--color-surface-alt)]
-                       px-2 py-0.5 rounded-md">
+          <a
+            href={`/tags/${tag}/`}
+            class="text-xs text-[var(--color-text-faint)] bg-[var(--color-surface-alt)]
+                   px-2 py-0.5 rounded-md hover:text-[var(--color-accent)]
+                   hover:bg-[var(--color-accent-subtle)] transition-colors"
+          >
             #{tag}
-          </span>
+          </a>
         ))}
       </div>
     )}
@@ -66,4 +73,4 @@ const categoryLabels: Record<string, string> = {
       <path d="M9 5l7 7-7 7" />
     </svg>
   </article>
-</a>
+</div>

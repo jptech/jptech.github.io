@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getReadingTime } from '../../utils/reading-time';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+
+  return tags.map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag}`} description={`Posts tagged with "${tag}".`}>
+  <div class="mb-10">
+    <a
+      href="/"
+      class="text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+    >
+      &larr; All posts
+    </a>
+    <h1 class="text-2xl font-bold tracking-tight mt-4">
+      Posts tagged <span class="text-[var(--color-accent)] font-mono">#{tag}</span>
+    </h1>
+    <p class="text-sm text-[var(--color-text-muted)] mt-1">
+      {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+    </p>
+    <div class="mt-6 h-px bg-gradient-to-r from-[var(--color-accent)] via-[var(--color-border)] to-transparent"></div>
+  </div>
+
+  <div class="post-list divide-y divide-[var(--color-border-subtle)]">
+    {posts.map((post) => (
+      <PostCard
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        category={post.data.category}
+        tags={post.data.tags}
+        slug={post.id}
+        readingTime={getReadingTime(post.body ?? '')}
+      />
+    ))}
+  </div>
+</BaseLayout>

@@ -12,10 +12,12 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.18.0",
     "mermaid": "^11.12.3",
+    "satori": "^0.21.0",
     "tailwindcss": "^4.2.1",
     "unist-util-visit": "^5.1.0"
   }

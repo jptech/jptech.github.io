@@ -47,6 +47,7 @@ const categoryLabels: Record<string, string> = {
 <BaseLayout
   title={title}
   description={description}
+  image={`/og/${post.id}.png`}
   article={{
     publishedTime: date.toISOString(),
     modifiedTime: updatedDate?.toISOString(),
@@ -76,9 +77,15 @@ const categoryLabels: Record<string, string> = {
     {tags.length > 0 && (
       <div class="flex flex-wrap gap-2 mb-8">
         {tags.map((tag) => (
-          <span class="text-xs text-[var(--color-text-faint)] bg-[var(--color-surface-alt)] border border-[var(--color-border-subtle)] px-2 py-0.5 rounded">
+          <a
+            href={`/tags/${tag}/`}
+            class="text-xs text-[var(--color-text-faint)] bg-[var(--color-surface-alt)]
+                   border border-[var(--color-border-subtle)] px-2 py-0.5 rounded
+                   hover:text-[var(--color-accent)] hover:border-[var(--color-accent)]/30
+                   transition-colors"
+          >
             #{tag}
-          </span>
+          </a>
         ))}
       </div>
     )}
