@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config --local -l)",
+      "Bash(git config --get-regexp \"remote\\\\|branch\")",
+      "Bash(bun --version)",
+      "Bash(\"C:/Users/jpark/AppData/Local/Microsoft/WinGet/Packages/Oven-sh.Bun_Microsoft.Winget.Source_8wekyb3d8bbwe/bun-windows-x64/bun.exe\" --version)",
+      "Bash(BUN=\"/c/Users/jpark/AppData/Local/Microsoft/WinGet/Packages/Oven-sh.Bun_Microsoft.Winget.Source_8wekyb3d8bbwe/bun-windows-x64/bun.exe\")",
+      "Bash(\"$BUN\" add astro @astrojs/rss @astrojs/sitemap @tailwindcss/typography @tailwindcss/vite tailwindcss mermaid unist-util-visit)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(\"$BUN\" run build)",
+      "Bash(npx astro build)",
+      "Bash(bun run build)"
+    ]
+  }
+}

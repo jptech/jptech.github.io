@@ -1,0 +1,56 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navItems = [
+  { href: '/', label: 'Blog' },
+  { href: '/about', label: 'About' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40 w-full border-b border-transparent transition-[border-color,background-color] duration-200"
+>
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <a href="/" class="text-lg font-semibold tracking-tight text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors">
+      jpark
+    </a>
+    <nav class="flex items-center gap-6">
+      {navItems.map(({ href, label }) => (
+        <a
+          href={href}
+          class:list={[
+            'text-sm transition-colors relative',
+            currentPath === href || (href !== '/' && currentPath.startsWith(href))
+              ? 'text-[var(--color-text)] font-medium'
+              : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
+          ]}
+        >
+          {label}
+          {(currentPath === href || (href !== '/' && currentPath.startsWith(href))) && (
+            <span class="absolute -bottom-1 left-0 right-0 h-0.5 bg-[var(--color-accent)] rounded-full" />
+          )}
+        </a>
+      ))}
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>
+
+<script>
+  function setupHeader() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+
+    function onScroll() {
+      header.classList.toggle('scrolled', window.scrollY > 16);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  setupHeader();
+  document.addEventListener('astro:after-swap', setupHeader);
+</script>

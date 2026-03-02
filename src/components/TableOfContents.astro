@@ -1,0 +1,82 @@
+---
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings } = Astro.props;
+const filtered = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{filtered.length > 0 && (
+  <details class="toc-details mb-8 rounded-lg border border-[var(--color-border-subtle)]
+                  bg-[var(--color-surface-alt)] overflow-hidden" open>
+    <summary class="cursor-pointer font-medium text-sm select-none px-4 py-3
+                    flex items-center justify-between
+                    hover:bg-[var(--color-border-subtle)] transition-colors">
+      <span>Table of Contents</span>
+      <svg class="toc-chevron w-4 h-4 text-[var(--color-text-faint)] transition-transform duration-200"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path d="M19 9l-7 7-7-7" />
+      </svg>
+    </summary>
+    <nav class="toc-nav px-4 pb-4">
+      <ul class="space-y-1 text-sm border-l-2 border-[var(--color-border-subtle)] ml-1">
+        {filtered.map((heading) => (
+          <li class:list={[heading.depth === 3 ? 'ml-4' : 'ml-0']}>
+            <a
+              href={`#${heading.slug}`}
+              data-toc-link={heading.slug}
+              class="toc-link block pl-3 py-0.5 -ml-[2px] border-l-2 border-transparent
+                     text-[var(--color-text-muted)] hover:text-[var(--color-accent)]
+                     transition-all duration-150"
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </details>
+)}
+
+<script>
+  function setupTocHighlighting() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+    if (links.length === 0) return;
+
+    const headingIds = Array.from(links).map(l => l.dataset.tocLink!);
+    const headings = headingIds
+      .map(id => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    if (headings.length === 0) return;
+
+    let activeId = headingIds[0];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            activeId = entry.target.id;
+            break;
+          }
+        }
+
+        links.forEach(link => {
+          link.classList.toggle('active', link.dataset.tocLink === activeId);
+        });
+      },
+      { rootMargin: '-80px 0px -70% 0px', threshold: 0 }
+    );
+
+    headings.forEach(h => observer.observe(h));
+
+    // Set initial active state
+    links.forEach(link => {
+      link.classList.toggle('active', link.dataset.tocLink === activeId);
+    });
+  }
+
+  setupTocHighlighting();
+  document.addEventListener('astro:after-swap', setupTocHighlighting);
+</script>

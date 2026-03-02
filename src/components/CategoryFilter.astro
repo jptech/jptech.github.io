@@ -1,0 +1,89 @@
+---
+const categories = [
+  { value: 'all', label: 'All' },
+  { value: 'deep-dive', label: 'Deep Dives' },
+  { value: 'project', label: 'Projects' },
+  { value: 'note', label: 'Notes' },
+];
+---
+
+<div class="relative inline-flex gap-1 p-1 rounded-lg bg-[var(--color-surface-alt)]
+            border border-[var(--color-border-subtle)] mb-8" id="category-filter">
+  <!-- Sliding indicator -->
+  <div id="filter-indicator"
+       class="absolute top-1 bottom-1 rounded-md bg-[var(--color-surface)]
+              shadow-sm border border-[var(--color-border-subtle)]
+              transition-all duration-200 ease-out pointer-events-none"
+       style="left: 4px; width: 0;"></div>
+
+  {categories.map(({ value, label }) => (
+    <button
+      type="button"
+      data-filter={value}
+      class:list={[
+        'relative z-10 text-sm px-3 py-1 rounded-md transition-colors cursor-pointer',
+        value === 'all'
+          ? 'text-[var(--color-text)] font-medium'
+          : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
+      ]}
+    >
+      {label}
+    </button>
+  ))}
+</div>
+
+<script>
+  function setupCategoryFilter() {
+    const filter = document.getElementById('category-filter');
+    const indicator = document.getElementById('filter-indicator');
+    if (!filter || !indicator) return;
+
+    const buttons = filter.querySelectorAll<HTMLButtonElement>('button[data-filter]');
+    const articles = document.querySelectorAll<HTMLElement>('article[data-category]');
+
+    function moveIndicator(btn: HTMLButtonElement) {
+      const filterRect = filter!.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      indicator!.style.left = `${btnRect.left - filterRect.left}px`;
+      indicator!.style.width = `${btnRect.width}px`;
+    }
+
+    // Initialize indicator on "All" button
+    const activeBtn = filter.querySelector<HTMLButtonElement>('button[data-filter="all"]');
+    if (activeBtn) {
+      requestAnimationFrame(() => moveIndicator(activeBtn));
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const selected = btn.dataset.filter!;
+
+        // Update button styles
+        buttons.forEach((b) => {
+          const isActive = b.dataset.filter === selected;
+          b.classList.toggle('text-[var(--color-text)]', isActive);
+          b.classList.toggle('font-medium', isActive);
+          b.classList.toggle('text-[var(--color-text-muted)]', !isActive);
+        });
+
+        // Move the sliding indicator
+        moveIndicator(btn);
+
+        // Filter articles with stagger animation
+        articles.forEach((article, i) => {
+          const show = selected === 'all' || article.dataset.category === selected;
+          if (show) {
+            article.classList.remove('filter-out');
+            article.style.transitionDelay = `${i * 30}ms`;
+          } else {
+            article.classList.add('filter-out');
+            article.style.transitionDelay = '0ms';
+          }
+        });
+      });
+    });
+  }
+
+  setupCategoryFilter();
+  document.addEventListener('astro:after-swap', setupCategoryFilter);
+</script>

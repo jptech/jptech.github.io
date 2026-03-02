@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const timeline = [
+  { period: '2026 –', role: 'Hardware Engineer', org: 'HFT Trading Firm', description: 'Custom hardware for low-latency trading systems.' },
+  { period: '2022 – 2026', role: 'Hardware/Software Engineer', org: 'Microsoft Azure', description: 'FPGA design and tooling for cloud infrastructure.' },
+  { period: '2018 – 2022', role: 'Research', org: 'Neuromorphic Computing & ML/AI', description: 'Published research in neuromorphic computing and machine learning. 2,000+ citations.' },
+];
+---
+
+<BaseLayout title="About" description="Hardware/software engineer specializing in FPGA design, custom hardware, and systems engineering.">
+  <h1 class="text-3xl font-bold tracking-tight mb-6">About</h1>
+
+  <div class="prose dark:prose-invert max-w-none mb-12">
+    <p>
+      I'm a hardware/software engineer who has spent years working on FPGAs — both design and tooling.
+      My background spans neuromorphic computing and ML/AI research, cloud-scale hardware at Microsoft Azure,
+      and now custom hardware for high-frequency trading.
+    </p>
+    <p>
+      This site is a place to write about the technical topics I find interesting: FPGA architecture,
+      hardware design patterns, tooling, and the occasional software deep-dive.
+    </p>
+  </div>
+
+  <h2 class="text-xl font-semibold tracking-tight mb-6">Timeline</h2>
+  <div class="relative ml-4 pl-6 space-y-10 mb-12">
+    <!-- Gradient vertical line -->
+    <div class="absolute left-0 top-2 bottom-2 w-px bg-gradient-to-b
+                from-[var(--color-accent)] via-[var(--color-border)] to-[var(--color-border-subtle)]"></div>
+
+    {timeline.map(({ period, role, org, description }) => (
+      <div class="relative group">
+        <!-- Dot with ring -->
+        <div class="absolute -left-[calc(1.5rem+5px)] top-1 flex items-center justify-center">
+          <div class="w-3 h-3 rounded-full bg-[var(--color-accent)] ring-4 ring-[var(--color-surface)]
+                      group-hover:ring-[var(--color-accent-subtle)] transition-all duration-200"></div>
+        </div>
+
+        <!-- Content card -->
+        <div class="rounded-lg border border-transparent p-3 -mx-3
+                    group-hover:border-[var(--color-border-subtle)]
+                    group-hover:bg-[var(--color-surface-alt)]
+                    transition-all duration-200">
+          <p class="text-xs font-mono text-[var(--color-text-faint)] mb-1">{period}</p>
+          <p class="font-medium">
+            {role}
+            <span class="text-[var(--color-text-muted)]">@ {org}</span>
+          </p>
+          <p class="text-sm text-[var(--color-text-muted)] mt-1">{description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <h2 class="text-xl font-semibold tracking-tight mb-4">Links</h2>
+  <div class="flex gap-6 text-sm">
+    <a href="https://github.com" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors">GitHub</a>
+    <a href="https://linkedin.com" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors">LinkedIn</a>
+  </div>
+</BaseLayout>

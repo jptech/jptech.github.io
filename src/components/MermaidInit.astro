@@ -1,0 +1,91 @@
+---
+---
+
+<script>
+  import mermaid from 'mermaid';
+
+  const lightVars = {
+    primaryColor: '#dbeafe',
+    primaryTextColor: '#1e40af',
+    primaryBorderColor: '#93c5fd',
+    secondaryColor: '#f3f4f6',
+    secondaryTextColor: '#374151',
+    secondaryBorderColor: '#d1d5db',
+    tertiaryColor: '#fefce8',
+    lineColor: '#6b7280',
+    textColor: '#1f2328',
+    mainBkg: '#dbeafe',
+    nodeBorder: '#93c5fd',
+    clusterBkg: '#f6f8fa',
+    clusterBorder: '#d1d9e0',
+    titleColor: '#1f2328',
+    edgeLabelBackground: '#ffffff',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: '14px',
+  };
+
+  const darkVars = {
+    primaryColor: '#1e3a5f',
+    primaryTextColor: '#93c5fd',
+    primaryBorderColor: '#3b82f6',
+    secondaryColor: '#1e293b',
+    secondaryTextColor: '#cbd5e1',
+    secondaryBorderColor: '#475569',
+    tertiaryColor: '#422006',
+    lineColor: '#6b7280',
+    textColor: '#e6edf3',
+    mainBkg: '#1e3a5f',
+    nodeBorder: '#3b82f6',
+    clusterBkg: '#161b22',
+    clusterBorder: '#30363d',
+    titleColor: '#e6edf3',
+    edgeLabelBackground: '#0d1117',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: '14px',
+  };
+
+  function initMermaid() {
+    const isDark = document.documentElement.classList.contains('dark');
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: isDark ? darkVars : lightVars,
+    });
+
+    // Re-render: restore original source then re-run
+    document.querySelectorAll<HTMLElement>('.mermaid').forEach((el) => {
+      const original = el.getAttribute('data-original');
+      if (original) {
+        el.removeAttribute('data-processed');
+        el.innerHTML = original;
+      }
+    });
+
+    mermaid.run({ querySelector: '.mermaid' });
+  }
+
+  // Store original source before first render
+  document.querySelectorAll<HTMLElement>('.mermaid').forEach((el) => {
+    if (!el.getAttribute('data-original')) {
+      el.setAttribute('data-original', el.textContent ?? '');
+    }
+  });
+
+  initMermaid();
+
+  // Re-init on theme toggle
+  new MutationObserver(() => initMermaid()).observe(
+    document.documentElement,
+    { attributes: true, attributeFilter: ['class'] }
+  );
+
+  // Re-init after Astro view transitions
+  document.addEventListener('astro:after-swap', () => {
+    document.querySelectorAll<HTMLElement>('.mermaid').forEach((el) => {
+      if (!el.getAttribute('data-original')) {
+        el.setAttribute('data-original', el.textContent ?? '');
+      }
+    });
+    initMermaid();
+  });
+</script>
