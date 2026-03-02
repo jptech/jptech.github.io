@@ -10,7 +10,11 @@
       "mcp__Claude_Preview__preview_start",
       "Bash(\"$BUN\" run build)",
       "Bash(npx astro build)",
-      "Bash(bun run build)"
+      "Bash(bun run build)",
+      "Bash(git -C \"Z:/personalsite/.claude/worktrees/distracted-dewdney\" status)",
+      "Bash(git -C \"Z:/personalsite/.claude/worktrees/distracted-dewdney\" diff --stat)",
+      "Bash(git -C \"Z:/personalsite/.claude/worktrees/distracted-dewdney\" log --oneline -5)",
+      "Bash(git -C \"Z:/personalsite/.claude/worktrees/distracted-dewdney\" diff)"
     ]
   }
 }

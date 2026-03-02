@@ -6,13 +6,6 @@
 
 /* ── Font declarations ── */
 @font-face {
-  font-family: "Inter";
-  src: url("/fonts/inter-variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-@font-face {
   font-family: "JetBrains Mono";
   src: url("/fonts/jetbrains-mono-variable.woff2") format("woff2");
   font-weight: 100 800;
@@ -21,33 +14,33 @@
 
 /* ── Design tokens ── */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
 
-  --color-surface: #ffffff;
-  --color-surface-alt: #f6f8fa;
-  --color-text: #1f2328;
-  --color-text-muted: #656d76;
-  --color-text-faint: #8b949e;
-  --color-border: #d1d9e0;
-  --color-border-subtle: #e8ecf0;
-  --color-accent: #0969da;
-  --color-accent-hover: #0550ae;
-  --color-accent-subtle: #ddf4ff;
+  --color-surface: #fcfcfc;
+  --color-surface-alt: #f4f5f7;
+  --color-text: #1a1d24;
+  --color-text-muted: #5e6671;
+  --color-text-faint: #8c939d;
+  --color-border: #d4d8de;
+  --color-border-subtle: #e9ecf0;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-subtle: #eff6ff;
 }
 
 /* ── Dark mode overrides ── */
 .dark {
-  --color-surface: #0d1117;
-  --color-surface-alt: #161b22;
-  --color-text: #e6edf3;
-  --color-text-muted: #8b949e;
-  --color-text-faint: #6e7681;
-  --color-border: #30363d;
-  --color-border-subtle: #21262d;
-  --color-accent: #58a6ff;
-  --color-accent-hover: #79c0ff;
-  --color-accent-subtle: #161b22;
+  --color-surface: #101218;
+  --color-surface-alt: #181c25;
+  --color-text: #e4e8ee;
+  --color-text-muted: #8b919c;
+  --color-text-faint: #5e6470;
+  --color-border: #2a2f3a;
+  --color-border-subtle: #1f2430;
+  --color-accent: #6b9eff;
+  --color-accent-hover: #93b8ff;
+  --color-accent-subtle: #181c25;
 }
 
 /* ── Base styles ── */
@@ -55,6 +48,38 @@ body {
   font-family: var(--font-sans);
   background-color: var(--color-surface);
   color: var(--color-text);
+  position: relative;
+}
+
+/* ── Background depth: subtle grain overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ── Background depth: subtle top glow ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+  height: 500px;
+  background: radial-gradient(
+    ellipse at 50% 20%,
+    color-mix(in srgb, var(--color-accent) 5%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 code, pre {
@@ -296,8 +321,33 @@ main {
   animation: fade-in-up 400ms ease-out both;
 }
 
+/* ── Staggered card entrance ── */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-list > * {
+  animation: card-enter 400ms ease-out both;
+}
+.post-list > *:nth-child(1) { animation-delay: 100ms; }
+.post-list > *:nth-child(2) { animation-delay: 180ms; }
+.post-list > *:nth-child(3) { animation-delay: 260ms; }
+.post-list > *:nth-child(4) { animation-delay: 340ms; }
+.post-list > *:nth-child(5) { animation-delay: 420ms; }
+.post-list > *:nth-child(6) { animation-delay: 500ms; }
+
 @media (prefers-reduced-motion: reduce) {
   main {
+    animation: none;
+  }
+  .post-list > * {
     animation: none;
   }
 }

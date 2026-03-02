@@ -7,7 +7,7 @@ export async function GET(context: APIContext) {
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
   return rss({
-    title: 'jpark',
+    title: 'Parker Mitchell',
     description: 'Technical writing on FPGA design, hardware engineering, and software systems.',
     site: context.site!,
     items: posts.map((post) => ({

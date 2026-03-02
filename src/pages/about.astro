@@ -2,20 +2,19 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const timeline = [
-  { period: '2026 –', role: 'Hardware Engineer', org: 'HFT Trading Firm', description: 'Custom hardware for low-latency trading systems.' },
-  { period: '2022 – 2026', role: 'Hardware/Software Engineer', org: 'Microsoft Azure', description: 'FPGA design and tooling for cloud infrastructure.' },
-  { period: '2018 – 2022', role: 'Research', org: 'Neuromorphic Computing & ML/AI', description: 'Published research in neuromorphic computing and machine learning. 2,000+ citations.' },
+  { period: 'Aug 2021 – Mar 2026', role: 'Hardware/Software Engineer', org: 'Microsoft', description: 'Cloud FPGA design and tooling for Azure infrastructure.' },
+  { period: 'Nov 2018 – Jul 2021', role: 'Research', org: 'ORNL', description: 'Neuromorphic computing and ML/AI research.' },
 ];
 ---
 
-<BaseLayout title="About" description="Hardware/software engineer specializing in FPGA design, custom hardware, and systems engineering.">
+<BaseLayout title="About" description="Hardware/software engineer specializing in FPGA design, hardware development tooling, and hw/sw codesign.">
   <h1 class="text-3xl font-bold tracking-tight mb-6">About</h1>
 
-  <div class="prose dark:prose-invert max-w-none mb-12">
+  <div class="prose dark:prose-invert max-w-none mb-8">
     <p>
-      I'm a hardware/software engineer who has spent years working on FPGAs — both design and tooling.
-      My background spans neuromorphic computing and ML/AI research, cloud-scale hardware at Microsoft Azure,
-      and now custom hardware for high-frequency trading.
+      I'm a hardware/software engineer with deep experience in FPGA design, tooling for hardware development,
+      and hw/sw codesign. My background spans neuromorphic computing and ML/AI research at Oak Ridge National Lab,
+      and cloud-scale FPGA infrastructure at Microsoft.
     </p>
     <p>
       This site is a place to write about the technical topics I find interesting: FPGA architecture,
@@ -23,8 +22,10 @@ const timeline = [
     </p>
   </div>
 
+  <div class="h-px bg-gradient-to-r from-[var(--color-accent)] via-[var(--color-border)] to-transparent mb-8"></div>
+
   <h2 class="text-xl font-semibold tracking-tight mb-6">Timeline</h2>
-  <div class="relative ml-4 pl-6 space-y-10 mb-12">
+  <div class="relative ml-4 pl-6 space-y-8">
     <!-- Gradient vertical line -->
     <div class="absolute left-0 top-2 bottom-2 w-px bg-gradient-to-b
                 from-[var(--color-accent)] via-[var(--color-border)] to-[var(--color-border-subtle)]"></div>
@@ -51,11 +52,5 @@ const timeline = [
         </div>
       </div>
     ))}
-  </div>
-
-  <h2 class="text-xl font-semibold tracking-tight mb-4">Links</h2>
-  <div class="flex gap-6 text-sm">
-    <a href="https://github.com" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors">GitHub</a>
-    <a href="https://linkedin.com" class="text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors">LinkedIn</a>
   </div>
 </BaseLayout>
