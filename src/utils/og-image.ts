@@ -178,7 +178,7 @@ export async function generateOgImage(
                             fontSize: 14,
                             color: TEXT_MUTED,
                           },
-                          children: 'parkermitchell.dev',
+                          children: 'jptech.github.io',
                         },
                       },
                     ],

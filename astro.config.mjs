@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import { remarkMermaid } from './src/utils/remark-mermaid.ts';
 
 export default defineConfig({
-  site: 'https://username.github.io',
+  site: 'https://jptech.github.io',
   integrations: [sitemap()],
   markdown: {
     shikiConfig: {
