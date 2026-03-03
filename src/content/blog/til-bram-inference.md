@@ -4,6 +4,7 @@ description: "A quick note on a common gotcha with block RAM inference in Vivado
 date: 2026-03-10
 tags: ["fpga", "vivado", "bram"]
 category: note
+draft: true
 ---
 
 Today I hit a classic Vivado issue: my RAM wasn't being inferred as BRAM despite looking correct in RTL.

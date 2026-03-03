@@ -4,6 +4,7 @@ description: "Strategies for meeting timing on complex FPGA designs targeting Xi
 date: 2026-03-15
 tags: ["fpga", "xilinx", "timing", "vivado"]
 category: deep-dive
+draft: true
 ---
 
 Timing closure is one of the most challenging aspects of FPGA design. When your design grows beyond a certain complexity, simply hitting "run implementation" and hoping for the best no longer works. You need a systematic approach.

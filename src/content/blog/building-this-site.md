@@ -4,6 +4,7 @@ description: "A quick overview of the tech stack and design decisions behind thi
 date: 2026-03-01
 tags: ["astro", "web", "tailwind"]
 category: project
+draft: true
 ---
 
 I built this site during a month off between jobs. The goal was simple: a fast, clean blog where I could write about technical topics without fighting the tooling.
