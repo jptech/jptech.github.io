@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const timeline = [
+  { period: 'Aug 2021 – Mar 2026', role: 'Hardware/Software Engineer', org: 'Microsoft', description: 'Cloud FPGA design and tooling for Azure infrastructure.' },
+  { period: 'Nov 2018 – Jul 2021', role: 'Research', org: 'ORNL', description: 'Neuromorphic computing and ML/AI research.' },
+];
+---
+
+<BaseLayout title="About" description="Hardware/software engineer specializing in FPGA design, hardware development tooling, and hw/sw codesign.">
+  <h1 class="text-3xl font-bold tracking-tight mb-6">About</h1>
+
+  <div class="prose dark:prose-invert max-w-none mb-8">
+    <p>
+      I'm a hardware/software engineer with deep experience in FPGA design, tooling for hardware development,
+      and hw/sw codesign. My background spans neuromorphic computing and ML/AI research at Oak Ridge National Lab,
+      and cloud-scale FPGA infrastructure at Microsoft.
+    </p>
+    <p>
+      This site is a place to write about the technical topics I find interesting: FPGA architecture,
+      hardware design patterns, tooling, and the occasional software deep-dive.
+    </p>
+  </div>
+
+  <div class="h-px bg-gradient-to-r from-[var(--color-accent)] via-[var(--color-border)] to-transparent mb-8"></div>
+
+  <h2 class="text-xl font-semibold tracking-tight mb-6">Timeline</h2>
+  <div class="relative ml-4 pl-6 space-y-8">
+    <!-- Gradient vertical line -->
+    <div class="absolute left-0 top-2 bottom-2 w-px bg-gradient-to-b
+                from-[var(--color-accent)] via-[var(--color-border)] to-[var(--color-border-subtle)]"></div>
+
+    {timeline.map(({ period, role, org, description }) => (
+      <div class="relative group">
+        <!-- Dot with ring -->
+        <div class="absolute -left-[calc(1.5rem+5px)] top-1 flex items-center justify-center">
+          <div class="w-3 h-3 rounded-full bg-[var(--color-accent)] ring-4 ring-[var(--color-surface)]
+                      group-hover:ring-[var(--color-accent-subtle)] transition-all duration-200"></div>
+        </div>
+
+        <!-- Content card -->
+        <div class="rounded-lg border border-transparent p-3 -mx-3
+                    group-hover:border-[var(--color-border-subtle)]
+                    group-hover:bg-[var(--color-surface-alt)]
+                    transition-all duration-200">
+          <p class="text-xs font-mono text-[var(--color-text-faint)] mb-1">{period}</p>
+          <p class="font-medium">
+            {role}
+            <span class="text-[var(--color-text-muted)]">@ {org}</span>
+          </p>
+          <p class="text-sm text-[var(--color-text-muted)] mt-1">{description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

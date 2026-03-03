@@ -1,0 +1,255 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import PrevNextNav from '../components/PrevNextNav.astro';
+import MermaidInit from '../components/MermaidInit.astro';
+
+interface PostLink {
+  id: string;
+  data: { title: string };
+}
+
+interface Props {
+  post: {
+    id: string;
+    data: {
+      title: string;
+      description: string;
+      date: Date;
+      updatedDate?: Date;
+      tags: string[];
+      category: string;
+    };
+  };
+  headings: { depth: number; slug: string; text: string }[];
+  readingTime: number;
+  prevPost?: PostLink;
+  nextPost?: PostLink;
+}
+
+const { post, headings, readingTime, prevPost, nextPost } = Astro.props;
+const { title, description, date, updatedDate, tags, category } = post.data;
+
+const categoryStyles: Record<string, string> = {
+  'deep-dive': 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-400/30',
+  'project': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/50 dark:text-emerald-300 dark:ring-emerald-400/30',
+  'note': 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/50 dark:text-amber-300 dark:ring-amber-400/30',
+};
+
+const categoryLabels: Record<string, string> = {
+  'deep-dive': 'Deep Dive',
+  'project': 'Project',
+  'note': 'Note',
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={`/og/${post.id}.png`}
+  article={{
+    publishedTime: date.toISOString(),
+    modifiedTime: updatedDate?.toISOString(),
+    tags,
+  }}
+>
+  <!-- Reading progress bar -->
+  <div id="reading-progress" class="fixed top-0 left-0 h-[2px] bg-[var(--color-accent)] z-50 w-0"
+       style="transition: width 50ms linear;"></div>
+
+  <article>
+    <div class="mb-6">
+      <span class:list={['text-xs font-medium px-2 py-0.5 rounded-full', categoryStyles[category]]}>
+        {categoryLabels[category]}
+      </span>
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-4">{title}</h1>
+    <div class="flex flex-wrap items-center gap-3 text-sm text-[var(--color-text-muted)] mb-4">
+      <FormattedDate date={date} />
+      {updatedDate && (
+        <span class="text-[var(--color-text-faint)]">
+          (updated <FormattedDate date={updatedDate} />)
+        </span>
+      )}
+      <span class="text-[var(--color-text-faint)]">{readingTime} min read</span>
+    </div>
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-2 mb-8">
+        {tags.map((tag) => (
+          <a
+            href={`/tags/${tag}/`}
+            class="text-xs text-[var(--color-text-faint)] bg-[var(--color-surface-alt)]
+                   border border-[var(--color-border-subtle)] px-2 py-0.5 rounded
+                   hover:text-[var(--color-accent)] hover:border-[var(--color-accent)]/30
+                   transition-colors"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
+    <TableOfContents headings={headings} />
+    <div class="prose dark:prose-invert max-w-none">
+      <slot />
+    </div>
+  </article>
+  <PrevNextNav prev={prevPost} next={nextPost} />
+  <MermaidInit />
+
+  <!-- Scroll to top button -->
+  <button
+    id="scroll-to-top"
+    aria-label="Scroll to top"
+    class="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full
+           bg-[var(--color-surface-alt)] border border-[var(--color-border)]
+           text-[var(--color-text-muted)] shadow-sm
+           flex items-center justify-center cursor-pointer
+           opacity-0 translate-y-2 pointer-events-none
+           transition-all duration-200 hover:bg-[var(--color-border-subtle)]
+           hover:text-[var(--color-text)]"
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
+  </button>
+
+  <!-- Reading progress bar -->
+  <script>
+    function setupProgressBar() {
+      const bar = document.getElementById('reading-progress');
+      if (!bar) return;
+
+      let ticking = false;
+      function updateProgress() {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
+        bar.style.width = `${progress * 100}%`;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            updateProgress();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+
+      updateProgress();
+    }
+
+    setupProgressBar();
+    document.addEventListener('astro:after-swap', setupProgressBar);
+  </script>
+
+  <!-- Code block copy button + language label -->
+  <script>
+    function setupCodeBlocks() {
+      document.querySelectorAll('pre.astro-code').forEach((pre) => {
+        if (pre.querySelector('.code-header')) return;
+
+        (pre as HTMLElement).style.position = 'relative';
+
+        const lang = pre.getAttribute('data-language')
+          || pre.querySelector('code')?.getAttribute('data-language')
+          || '';
+
+        const header = document.createElement('div');
+        header.className = 'code-header';
+        header.innerHTML = `
+          ${lang ? `<span class="code-lang">${lang}</span>` : '<span></span>'}
+          <button class="code-copy" aria-label="Copy code">
+            <svg class="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2"/>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            <svg class="check-icon" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 style="display:none">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+        `;
+
+        pre.insertBefore(header, pre.firstChild);
+
+        header.querySelector('.code-copy')?.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const code = pre.querySelector('code')?.textContent || '';
+          await navigator.clipboard.writeText(code);
+
+          const copyIcon = header.querySelector('.copy-icon') as HTMLElement;
+          const checkIcon = header.querySelector('.check-icon') as HTMLElement;
+          if (copyIcon && checkIcon) {
+            copyIcon.style.display = 'none';
+            checkIcon.style.display = 'block';
+            setTimeout(() => {
+              copyIcon.style.display = 'block';
+              checkIcon.style.display = 'none';
+            }, 2000);
+          }
+        });
+      });
+    }
+
+    setupCodeBlocks();
+    document.addEventListener('astro:after-swap', setupCodeBlocks);
+  </script>
+
+  <!-- Heading anchor links -->
+  <script>
+    function setupHeadingAnchors() {
+      const headings = document.querySelectorAll('.prose h2[id], .prose h3[id], .prose h4[id]');
+      headings.forEach(h => {
+        if (h.querySelector('.heading-anchor')) return;
+
+        const anchor = document.createElement('a');
+        anchor.href = `#${h.id}`;
+        anchor.className = 'heading-anchor';
+        anchor.setAttribute('aria-hidden', 'true');
+        anchor.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>`;
+
+        (h as HTMLElement).style.position = 'relative';
+        h.appendChild(anchor);
+      });
+    }
+
+    setupHeadingAnchors();
+    document.addEventListener('astro:after-swap', setupHeadingAnchors);
+  </script>
+
+  <!-- Scroll to top -->
+  <script>
+    function setupScrollToTop() {
+      const btn = document.getElementById('scroll-to-top');
+      if (!btn) return;
+
+      function toggle() {
+        const show = window.scrollY > 400;
+        btn.classList.toggle('opacity-0', !show);
+        btn.classList.toggle('translate-y-2', !show);
+        btn.classList.toggle('pointer-events-none', !show);
+        btn.classList.toggle('opacity-100', show);
+        btn.classList.toggle('translate-y-0', show);
+        btn.classList.toggle('pointer-events-auto', show);
+      }
+
+      window.addEventListener('scroll', toggle, { passive: true });
+      btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      toggle();
+    }
+
+    setupScrollToTop();
+    document.addEventListener('astro:after-swap', setupScrollToTop);
+  </script>
+</BaseLayout>

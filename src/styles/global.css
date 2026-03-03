@@ -1,0 +1,373 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ── Use class-based dark mode, not OS preference ── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Font declarations ── */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/jetbrains-mono-variable.woff2") format("woff2");
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+/* ── Design tokens ── */
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
+
+  --color-surface: #fcfcfc;
+  --color-surface-alt: #f4f5f7;
+  --color-text: #1a1d24;
+  --color-text-muted: #5e6671;
+  --color-text-faint: #8c939d;
+  --color-border: #d4d8de;
+  --color-border-subtle: #e9ecf0;
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-subtle: #eff6ff;
+}
+
+/* ── Dark mode overrides ── */
+.dark {
+  --color-surface: #101218;
+  --color-surface-alt: #181c25;
+  --color-text: #e4e8ee;
+  --color-text-muted: #8b919c;
+  --color-text-faint: #5e6470;
+  --color-border: #2a2f3a;
+  --color-border-subtle: #1f2430;
+  --color-accent: #6b9eff;
+  --color-accent-hover: #93b8ff;
+  --color-accent-subtle: #181c25;
+}
+
+/* ── Base styles ── */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  position: relative;
+}
+
+/* ── Background depth: subtle grain overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ── Background depth: subtle top glow ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+  height: 500px;
+  background: radial-gradient(
+    ellipse at 50% 20%,
+    color-mix(in srgb, var(--color-accent) 5%, transparent) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+code, pre {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}
+
+/* ── Prose typography overrides ── */
+.prose {
+  --tw-prose-body: var(--color-text);
+  --tw-prose-headings: var(--color-text);
+  --tw-prose-bold: var(--color-text);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-counters: var(--color-text-muted);
+  --tw-prose-bullets: var(--color-text-faint);
+  --tw-prose-hr: var(--color-border);
+  --tw-prose-quotes: var(--color-text);
+  --tw-prose-quote-borders: var(--color-border);
+  --tw-prose-code: var(--color-text);
+  --tw-prose-pre-bg: var(--color-surface-alt);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border-subtle);
+  --tw-prose-captions: var(--color-text-muted);
+
+  --tw-prose-invert-body: var(--color-text);
+  --tw-prose-invert-headings: var(--color-text);
+  --tw-prose-invert-bold: var(--color-text);
+  --tw-prose-invert-links: var(--color-accent);
+  --tw-prose-invert-counters: var(--color-text-muted);
+  --tw-prose-invert-bullets: var(--color-text-faint);
+  --tw-prose-invert-hr: var(--color-border);
+  --tw-prose-invert-quotes: var(--color-text);
+  --tw-prose-invert-quote-borders: var(--color-border);
+  --tw-prose-invert-code: var(--color-text);
+  --tw-prose-invert-pre-bg: var(--color-surface-alt);
+  --tw-prose-invert-th-borders: var(--color-border);
+  --tw-prose-invert-td-borders: var(--color-border-subtle);
+  --tw-prose-invert-captions: var(--color-text-muted);
+}
+
+.prose a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  transition: text-decoration-color 150ms;
+}
+
+.prose a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+/* ── Prose content polish ── */
+.prose h2,
+.prose h3,
+.prose h4 {
+  scroll-margin-top: 5rem;
+}
+
+.prose blockquote {
+  border-left-width: 3px;
+  border-left-color: var(--color-accent);
+  background-color: var(--color-surface-alt);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: normal;
+}
+
+.prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--color-border),
+    transparent
+  );
+  margin: 2.5rem 0;
+}
+
+/* ── Code block styling ── */
+.astro-code {
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-subtle);
+  background-color: var(--color-surface-alt) !important;
+}
+
+/* Shiki dual-theme: class-based dark mode switching */
+html.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: transparent !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+html.dark .astro-code {
+  background-color: var(--color-surface-alt) !important;
+  border-color: var(--color-border-subtle);
+}
+
+/* Light mode: also clear span backgrounds to prevent clash */
+.astro-code span {
+  background-color: transparent !important;
+}
+
+/* ── Inline code ── */
+:not(pre) > code {
+  background-color: var(--color-surface-alt);
+  border: 1px solid var(--color-border-subtle);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 450;
+}
+
+/* ── Mermaid diagram containers ── */
+pre.mermaid {
+  background: transparent !important;
+  border: none !important;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Code block header (copy button + language label) ── */
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -1rem -1.25rem 0.75rem -1.25rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.code-lang {
+  color: var(--color-text-faint);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.code-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  color: var(--color-text-faint);
+  cursor: pointer;
+  background: none;
+  border: none;
+  transition: color 150ms, background-color 150ms;
+}
+
+.code-copy:hover {
+  color: var(--color-text-muted);
+  background-color: var(--color-border-subtle);
+}
+
+/* ── Scrolled header state ── */
+#site-header.scrolled {
+  border-color: var(--color-border-subtle);
+  background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ── TOC animation and active state ── */
+.toc-details[open] .toc-chevron {
+  transform: rotate(180deg);
+}
+
+.toc-link.active {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* ── Heading anchor links ── */
+.heading-anchor {
+  position: absolute;
+  left: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  color: var(--color-text-faint);
+  transition: opacity 150ms;
+  padding: 0.125rem;
+}
+
+.prose h2:hover .heading-anchor,
+.prose h3:hover .heading-anchor,
+.prose h4:hover .heading-anchor {
+  opacity: 1;
+}
+
+.heading-anchor:hover {
+  color: var(--color-accent);
+}
+
+/* ── Post filter animation + card hover ── */
+article[data-category] {
+  transition: opacity 200ms ease, transform 200ms ease,
+              background-color 150ms ease-out, border-color 150ms ease-out;
+}
+
+article[data-category].filter-out {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+
+/* ── Page entry animation ── */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main {
+  animation: fade-in-up 400ms ease-out both;
+}
+
+/* ── Staggered card entrance ── */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-list > * {
+  animation: card-enter 400ms ease-out both;
+}
+.post-list > *:nth-child(1) { animation-delay: 100ms; }
+.post-list > *:nth-child(2) { animation-delay: 180ms; }
+.post-list > *:nth-child(3) { animation-delay: 260ms; }
+.post-list > *:nth-child(4) { animation-delay: 340ms; }
+.post-list > *:nth-child(5) { animation-delay: 420ms; }
+.post-list > *:nth-child(6) { animation-delay: 500ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  main {
+    animation: none;
+  }
+  .post-list > * {
+    animation: none;
+  }
+}
+
+/* ── Theme toggle icon animation ── */
+@keyframes theme-icon-in {
+  from {
+    transform: rotate(-90deg) scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+
+#theme-toggle svg {
+  transition: transform 300ms ease, opacity 150ms ease;
+}
+
+#theme-toggle svg.entering {
+  animation: theme-icon-in 300ms ease-out;
+}

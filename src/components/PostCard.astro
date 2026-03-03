@@ -1,0 +1,76 @@
+---
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  category: 'deep-dive' | 'project' | 'note';
+  tags: string[];
+  slug: string;
+  readingTime: number;
+}
+
+const { title, description, date, category, tags, slug, readingTime } = Astro.props;
+
+const categoryStyles: Record<string, string> = {
+  'deep-dive': 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20 dark:bg-blue-950/50 dark:text-blue-300 dark:ring-blue-400/30',
+  'project': 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20 dark:bg-emerald-950/50 dark:text-emerald-300 dark:ring-emerald-400/30',
+  'note': 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20 dark:bg-amber-950/50 dark:text-amber-300 dark:ring-amber-400/30',
+};
+
+const categoryLabels: Record<string, string> = {
+  'deep-dive': 'Deep Dive',
+  'project': 'Project',
+  'note': 'Note',
+};
+---
+
+<div class="group block">
+  <article
+    class="relative py-5 px-4 -mx-4 rounded-xl border border-transparent
+           transition-colors duration-150 ease-out
+           hover:bg-[var(--color-surface-alt)]
+           hover:border-[var(--color-border-subtle)]"
+    data-category={category}
+  >
+    <!-- Stretched link: makes entire card clickable -->
+    <a href={`/blog/${slug}/`} class="absolute inset-0 z-0" aria-hidden="true"></a>
+
+    <div class="flex items-center gap-3 mb-2">
+      <span class:list={['text-xs font-medium px-2 py-0.5 rounded-full', categoryStyles[category]]}>
+        {categoryLabels[category]}
+      </span>
+      <FormattedDate date={date} />
+      <span class="text-xs text-[var(--color-text-faint)]">{readingTime} min read</span>
+    </div>
+
+    <h2 class="text-lg font-semibold group-hover:text-[var(--color-accent)] transition-colors">
+      {title}
+    </h2>
+    <p class="text-sm text-[var(--color-text-muted)] mt-1 line-clamp-2">{description}</p>
+
+    {tags.length > 0 && (
+      <div class="flex gap-2 mt-3 relative z-10">
+        {tags.slice(0, 4).map((tag) => (
+          <a
+            href={`/tags/${tag}/`}
+            class="text-xs text-[var(--color-text-faint)] bg-[var(--color-surface-alt)]
+                   px-2 py-0.5 rounded-md hover:text-[var(--color-accent)]
+                   hover:bg-[var(--color-accent-subtle)] transition-colors"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <svg
+      class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-faint)]
+             opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0
+             transition-all duration-200"
+      fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  </article>
+</div>
